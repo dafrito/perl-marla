@@ -1,0 +1,11 @@
+%package @PACKAGE@
+Release:	1%{?dist}
+Summary:	Content and configuration for @SITE@
+Group:		Applications/Internet
+URL:		@SITE@
+
+%description @PACKAGE@
+Apache configuration, static files, and dynamic content for @SITE@.
+
+%files @PACKAGE@
+%config(noreplace) %{_sysconfdir}/http.d/@SITE@.conf

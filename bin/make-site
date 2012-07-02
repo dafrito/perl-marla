@@ -17,10 +17,21 @@ if test -d $SITE; then
 	die "Site '$SITE' already exists. Remove the $SITE directory to recreate."
 fi
 
-# TODO These should actually copy from a skeleton
-mkdir $SITE
-mkdir -p $SITE/httpd
-mkdir -p $SITE/static
-mkdir -p $SITE/mason
+# Create a new structure from the existing skeleton
+cp -r skeleton $SITE || die "Failed to create $SITE"
 
+# Copy this site to websites, so it will be included
+# in generated makefiles
+if ! grep -q -x -F "$SITE" websites; then
+	echo $SITE >>websites
+fi
+
+# Replace our placeholder variables with the names
+# of our new stie.
+PACKAGE=`echo $SITE | sed -e 's/\./-/g'`
+find $SITE -type f -name '*.in' | xargs sed -i \
+	-e "s/@PACKAGE@/$PACKAGE/g" \
+	-e "s/@SITE@/$SITE/g"
+
+# Finally, indicate that we're ready to go
 echo "$SITE is ready for use"
