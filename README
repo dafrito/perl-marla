@@ -1,0 +1,26 @@
+Marla - The Websites of Aaron Faanes
+
+Marla contains the web configuration and content for each of my websites. Each
+website can be found under its directory, with the following organization:
+
+example.com/            Root for this website
+example.com/LICENSE     Root for this website
+example.com/httpd/      Apache configuration
+example.com/static/     Static content: css, js, etc.
+example.com/mason/      Mason component directory
+
+This organization will be created automatically by bin/make-site. You should use
+that command when starting from scratch. make-site should construct a relatively
+complete framework for a new site. Marla will indicate if any manual
+intervention is required.
+
+While Marla intends to be a mostly-automated tool for creating and deploying
+websites, I haven't intended it to be used outside my own setup. As a result,
+any intrepid people who wish to steal it are welcome to do so, but do so at
+their own risk.
+
+Each website will be built using make and installed using make install.
+Installation via RPM is also supported. By convention, each website will become
+a new subpackage of marla, such as marla-example-com.
+
+vim: set tw=80 et! :

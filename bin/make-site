@@ -1,0 +1,26 @@
+#!/bin/bash
+PATH=/bin:/usr/bin
+
+die() {
+	echo $* >&2
+	exit 1
+}
+
+SITE=$1
+shift
+
+if test "x$SITE" = x; then
+	die "No site name specified!"
+fi
+
+if test -d $SITE; then
+	die "Site already exists!"
+fi
+
+# TODO These should actually copy from a skeleton
+mkdir $SITE
+mkdir -p $SITE/httpd
+mkdir -p $SITE/static
+mkdir -p $SITE/mason
+
+echo "$SITE is ready for use"
