@@ -10,11 +10,11 @@ SITE=$1
 shift
 
 if test "x$SITE" = x; then
-	die "No site name specified!"
+	die "No site name specified. Usage: ./bin/make-site [site-name]"
 fi
 
 if test -d $SITE; then
-	die "Site already exists!"
+	die "Site '$SITE' already exists. Remove the $SITE directory to recreate."
 fi
 
 # TODO These should actually copy from a skeleton
