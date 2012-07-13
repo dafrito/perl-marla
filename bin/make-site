@@ -29,7 +29,7 @@ fi
 # Replace our placeholder variables with the names
 # of our new stie.
 PACKAGE=`echo $SITE | sed -e 's/\./-/g'`
-find $SITE -type f -name '*.in' | xargs sed -i \
+find $SITE -type f | xargs sed -i \
 	-e "s/@PACKAGE@/$PACKAGE/g" \
 	-e "s/@SITE@/$SITE/g"
 
