@@ -60,3 +60,5 @@ $(RPMDIR):
 clean:
 	[ "$(OUTDIR)" != "/" ] && rm -rf $(OUTDIR)
 .PHONY: clean
+
+# vim: set noet :
