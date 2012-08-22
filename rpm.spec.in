@@ -23,7 +23,7 @@ be very useful unless you're developing these websites.
 
 %build
 ./configure %{buildname}
-make
+make DIRTY_REPO=true
 
 %install
 make DESTDIR=$RPM_BUILD_ROOT install
