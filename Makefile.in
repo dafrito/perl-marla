@@ -1,3 +1,4 @@
+include build/default.config
 include build.config
 
 # Default rule
