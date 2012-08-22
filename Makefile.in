@@ -39,6 +39,7 @@ $(OUTDIR)/$(NAME).spec: $(SPECFILE) | $(OUTDIR)
 	echo -n >$@
 	echo "Name:	$(NAME)" >>$@
 	echo "%define fullname $(FULLNAME)" >>$@
+	echo "%define buildname $(BUILDNAME)" >>$@
 	cat $^ >>$@
 
 RPMFLAGS ?= --ba

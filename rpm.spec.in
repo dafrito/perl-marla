@@ -22,7 +22,7 @@ be very useful unless you're developing these websites.
 %setup -q -n %{fullname}
 
 %build
-%configure
+./configure %{buildname}
 make
 
 %install
