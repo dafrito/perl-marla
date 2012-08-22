@@ -1,4 +1,5 @@
 # BUILD and BUILDNAME are provided from ./configure
+include build/default.config
 
 # Default rule
 all: tar
