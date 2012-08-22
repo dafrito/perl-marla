@@ -4,7 +4,6 @@ Marla contains the web configuration and content for each of my websites. Each
 website can be found under its directory, with the following organization:
 
 example.com/            Root for this website
-example.com/LICENSE     Root for this website
 example.com/httpd/      Apache configuration
 example.com/static/     Static content: css, js, etc.
 example.com/mason/      Mason component directory
