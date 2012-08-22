@@ -13,6 +13,10 @@ if test "x$SITE" = x; then
 	die "No site name specified. Usage: ./bin/make-site [site-name]"
 fi
 
+if echo $SITE | grep -q -e '/'; then
+	die "Sites cannot contain slashes. Site given '$SITE'"
+fi
+
 if test -d $SITE; then
 	die "Site '$SITE' already exists. Remove the $SITE directory to recreate."
 fi
