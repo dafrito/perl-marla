@@ -61,6 +61,7 @@ $(RPMDIR):
 # We do NOT delete RPMDIR during clean, since we don't own it.
 clean:
 	[ "$(OUTDIR)" != "/" ] && rm -rf $(OUTDIR)
+	rm Makefile
 .PHONY: clean
 
 # vim: set noet :
