@@ -24,7 +24,7 @@ else
 endif
 .PHONY: clean-repo
 
-Makefile: Makefile.in configure $(BUILD) build/default.config clean-repo
+Makefile: Makefile.in configure $(BUILD) build/default.config
 	./configure $(BUILDNAME)
 
 $(OUTDIR)/$(tarfile): clean-repo .git/refs/heads/master | $(OUTDIR)
