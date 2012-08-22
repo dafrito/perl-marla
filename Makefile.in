@@ -6,7 +6,7 @@ all: tar
 
 FULLNAME=$(NAME)-$(shell git describe --always)
 
-OUTDIR ?= build
+OUTDIR ?= release
 RPMDIR ?= $$HOME/rpmbuild
 SPECFILE ?= rpm.spec.in
 
