@@ -27,7 +27,7 @@ if ! grep -q -x -F "$SITE" websites; then
 fi
 
 # Replace our placeholder variables with the names
-# of our new stie.
+# of our new site
 PACKAGE=`echo $SITE | sed -e 's/\./-/g'`
 find $SITE -type f | xargs sed -i \
 	-e "s/@PACKAGE@/$PACKAGE/g" \
