@@ -15,6 +15,9 @@ tarfile=$(FULLNAME).tar.gz
 tar: $(OUTDIR)/$(tarfile)
 .PHONY: tar
 
+Makefile: Makefile.in configure $(BUILD) build/default.config
+	./configure $(BUILDNAME)
+
 clean-repo:
 ifndef DIRTY_REPO
 	git diff --exit-code || (echo "Error: Repository must not be dirty"; exit 1) # fail if changes exist
