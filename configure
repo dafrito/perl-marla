@@ -32,5 +32,6 @@ echo "BUILDNAME=$BUILDNAME"               >>Makefile
 echo "include $BUILD"                     >>Makefile
 echo                                      >>Makefile
 cat Makefile.in                           >>Makefile
+chmod ugo-w Makefile
 
 # vim: set et :
