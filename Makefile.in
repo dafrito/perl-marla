@@ -22,18 +22,10 @@ tarfile=$(FULLNAME).tar.gz
 tar: $(OUTDIR)/$(tarfile)
 .PHONY: tar
 
-clean-repo:
-ifndef DIRTY_REPO
-	git diff --exit-code || (echo "Error: Repository must not be dirty"; exit 1) # fail if changes exist
-else
-	true
-endif
-.PHONY: clean-repo
-
 Makefile: Makefile.in configure $(BUILD) build/default.config
 	./configure $(BUILDNAME)
 
-$(OUTDIR)/$(tarfile): clean-repo .git/refs/heads/master | $(OUTDIR)
+$(OUTDIR)/$(tarfile): .git/refs/heads/master | $(OUTDIR)
 	git archive --format=tar --prefix=$(FULLNAME)/ HEAD | gzip >$@
 
 $(OUTDIR):
@@ -50,7 +42,7 @@ $(OUTDIR)/$(NAME).spec: $(SPECFILE) | $(OUTDIR)
 	cat $^ >>$@
 
 RPMFLAGS ?= --ba
-rpm: clean-repo $(OUTDIR)/$(tarfile) $(OUTDIR)/$(NAME).spec | $(RPMDIR)
+rpm: $(OUTDIR)/$(tarfile) $(OUTDIR)/$(NAME).spec | $(RPMDIR)
 	cp -u $(OUTDIR)/$(tarfile)	$(RPMDIR)/SOURCES
 	cp -u $(OUTDIR)/$(NAME).spec	$(RPMDIR)/SPECS
 	rpmbuild $(RPMFLAGS) $(RPMDIR)/SPECS/$(NAME).spec
