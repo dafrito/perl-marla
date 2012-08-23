@@ -6,7 +6,7 @@ die() {
 }
 
 if [ -e Makefile ]; then
-    rm Makefile;
+    rm -f Makefile;
 fi
 
 if [ -z "$*" ]; then
