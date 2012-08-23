@@ -119,10 +119,14 @@ $(PREFIX):
 
 install-httpd: $(HTTPDETC) httpd/*.conf
 	cp httpd/*.conf $(HTTPDETC)
+	PORT=$(PORT); \
+	if test x$$PORT = x; then \
+		PORT="*"; \
+	fi; \
 	find $(HTTPDETC) -name '*.conf' | xargs sed -i \
 		-e "s#@HTTPDMARLA@#$(HTTPDMARLA)#g" \
 		-e "s/@IP@/$(IP)/g" \
-		-e "s/@PORT@/$(PORT)/g"
+		-e "s/@PORT@/$$PORT/g"
 .PHONY: install-httpd
 
 uninstall:
