@@ -87,7 +87,7 @@ install-httpd: $(HTTPDETC) httpd/sites.conf httpd/*.conf
 uninstall:
 	rm -rf $(HTTPDETC)
 	for site in `cat websites`; do \
-		$(MAKE) -C $$site uninstall; \
+		$(MAKE) -C $$site $@; \
 	done
 .PHONY: uninstall
 
@@ -97,7 +97,7 @@ clean:
 	chmod u+w Makefile httpd/sites.conf
 	rm -f Makefile httpd/sites.conf
 	for site in `cat websites`; do \
-		$(MAKE) -C $$site clean; \
+		$(MAKE) -C $$site $@; \
 	done
 .PHONY: clean
 
