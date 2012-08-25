@@ -6,18 +6,16 @@ export BUILDNAME
 export IP
 export PREFIX
 
-export FULLNAME=$(NAME)-$(shell git describe --always)
+export NAME=marla
+export FULLNAME=$(NAME)-$(BUILDNAME)
 
 export OUTDIR ?= release
 export RPMDIR ?= $$HOME/rpmbuild
-export SPECFILE ?= rpm.spec.in
 
-export HTTPDMARLA=conf/marla
+export HTTPDMARLA=conf/$(NAME)
 export HTTPDETC=$(PREFIX)/etc/httpd/$(HTTPDMARLA)
 
-export MARLASHARE=$(PREFIX)/usr/share/marla
-
-tarfile=$(FULLNAME).tar.gz
+export MARLASHARE=$(PREFIX)/usr/share/$(NAME)
 
 # Default rule
 all: build
@@ -32,6 +30,8 @@ build: websites
 	done
 .PHONY: build
 
+# Be certain that arguments passed to this make
+# are also passed to the uninstall's make.
 install: uninstall build install-httpd $(MARLASHARE)
 	if test x$(PORT) = x; then                    \
 		PORT=$(LISTEN_BASE);                      \
@@ -55,8 +55,6 @@ install: uninstall build install-httpd $(MARLASHARE)
 			let PORT++;                           \
 		fi;                                       \
 	done
-	# Be certain that arguments passed to this make
-	# are also passed to the uninstall's make.
 .PHONY: install
 
 $(MARLASHARE): $(PREFIX)
@@ -84,13 +82,15 @@ $(HTTPDETC): $(PREFIX)
 $(PREFIX):
 	mkdir -p $@
 
+tarfile=$(FULLNAME).tar.gz
+
 RPMFLAGS ?= --ba
-rpm: $(OUTDIR)/$(tarfile) $(OUTDIR)/$(NAME).spec | $(RPMDIR)
+rpm: $(OUTDIR)/$(tarfile) spec | $(RPMDIR)
 	cp -u $(OUTDIR)/$(tarfile)	$(RPMDIR)/SOURCES
-	cp -u $(OUTDIR)/$(NAME).spec	$(RPMDIR)/SPECS
-	rpmbuild $(RPMFLAGS) $(RPMDIR)/SPECS/$(NAME).spec
+	cp -u $(OUTDIR)/$(FULLNAME).spec	$(RPMDIR)/SPECS
+	rpmbuild $(RPMFLAGS) $(RPMDIR)/SPECS/$(FULLNAME).spec
 	cd $(OUTDIR); \
-	for package in `rpm -q --specfile ./$(NAME).spec`; do \
+	for package in `rpm -q --specfile ./$(FULLNAME).spec`; do \
 		arch=`echo $$package | grep -E -o '[^.]+$$'`; \
 		filename="$(RPMDIR)/RPMS/$$arch/$$package.rpm"; \
 		[ -e `basename $$filename` ] || ln -s $$filename; \
@@ -100,18 +100,33 @@ rpm: $(OUTDIR)/$(tarfile) $(OUTDIR)/$(NAME).spec | $(RPMDIR)
 tar: $(OUTDIR)/$(tarfile)
 .PHONY: tar
 
-$(OUTDIR)/$(tarfile): .git/refs/heads/master | $(OUTDIR)
-	git archive --format=tar --prefix=$(FULLNAME)/ HEAD | gzip >$@
+$(OUTDIR)/$(tarfile):
+	tar czf $@ \
+		--exclude-vcs \
+		--exclude-backups \
+		--exclude='release/**' \
+		--exclude='**-wip' \
+		--transform='s,^\.,$(FULLNAME),g' \
+		.;
+.PHONY: $(OUTDIR)/$(tarfile)
+# I use phony here to ensure the tarfile is always regenerated
 
-spec: $(OUTDIR)/$(NAME).spec
+spec: $(OUTDIR)/$(FULLNAME).spec
 .PHONY: spec
 
-$(OUTDIR)/$(NAME).spec: $(SPECFILE) | $(OUTDIR)
-	echo -n >$@
-	echo "Name:	$(NAME)" >>$@
-	echo "%define fullname $(FULLNAME)" >>$@
-	echo "%define buildname $(BUILDNAME)" >>$@
-	cat $^ >>$@
+$(OUTDIR)/$(FULLNAME).spec:
+	echo -n >$@0-wip
+	echo "%define projectname $(NAME)" >>$@-wip
+	echo "%define fullname $(FULLNAME)" >>$@-wip
+	echo "%define buildname $(BUILDNAME)" >>$@-wip
+	cat rpm.spec.in >>$@-wip
+	for site in `cat websites`; do                 \
+		echo >>$@-wip;                             \
+		cat $$site/rpm.spec.in >>$@-wip;           \
+	done
+	mv $@-wip $@
+.PHONY: $(OUTDIR)/$(FULLNAME).spec
+# I use phony here to ensure the specfile is always regenerated
 
 $(OUTDIR):
 	mkdir -p $(OUTDIR)
@@ -121,7 +136,7 @@ $(RPMDIR):
 	cd $@ && mkdir -p SOURCES SPECS BUILD RPMS SRPMS
 
 uninstall:
-	if echo $(HTTPDETC) | grep -q -e 'marla'; then \
+	if echo $(HTTPDETC) | grep -q -e '$(NAME)'; then \
 		rm -rf $(HTTPDETC);                        \
 	fi;
 	for site in `cat websites`; do                 \
