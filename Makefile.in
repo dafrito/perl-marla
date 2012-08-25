@@ -56,6 +56,8 @@ install: uninstall build install-httpd $(MARLASHARE)
 			let PORT++;                           \
 		fi;                                       \
 	done
+	# Be certain that arguments passed to this make
+	# are also passed to the uninstall's make.
 .PHONY: install
 
 $(MARLASHARE): $(PREFIX)
@@ -120,6 +122,8 @@ uninstall:
 	for site in `cat websites`; do \
 		$(MAKE) -C $$site $@; \
 	done
+	# Be certain that arguments passed to this make
+	# are also passed to the install's make.
 .PHONY: uninstall
 
 # We do NOT delete RPMDIR during clean, since we don't own it.
