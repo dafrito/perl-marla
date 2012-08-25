@@ -66,3 +66,6 @@ pushd $CHROOT/etc/httpd/conf
 mv httpd.conf httpd.conf.orig
 ln -s ./marla/httpd.conf
 popd
+
+# Make sure the chroot shares our timezone.
+cp /etc/localtime $CHROOT/etc/localtime
