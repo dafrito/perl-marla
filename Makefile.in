@@ -15,6 +15,8 @@ export SPECFILE ?= rpm.spec.in
 export HTTPDMARLA=conf/marla
 export HTTPDETC=$(PREFIX)/etc/httpd/$(HTTPDMARLA)
 
+export MARLASHARE=$(PREFIX)/usr/share/marla
+
 tarfile=$(FULLNAME).tar.gz
 
 # Default rule
@@ -30,7 +32,7 @@ build: websites
 	done
 .PHONY: build
 
-install: uninstall build install-httpd
+install: uninstall build install-httpd $(MARLASHARE)
 	if test x$(PORT) = x; then                    \
 		PORT=$(LISTEN_BASE);                      \
 	else                                          \
@@ -55,6 +57,9 @@ install: uninstall build install-httpd
 		fi;                                       \
 	done
 .PHONY: install
+
+$(MARLASHARE): $(PREFIX)
+	mkdir -p $@
 
 install-httpd: $(HTTPDETC) httpd/*.conf
 	cp httpd/*.conf $(HTTPDETC)
