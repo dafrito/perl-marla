@@ -7,7 +7,10 @@ Makefile: ../skeleton/Makefile
 	echo                                      >>$@
 	cat ../skeleton/Makefile                  >>$@
 
-install: $(HTTPDETC)
+install: install-httpd
+.PHONY: install
+
+install-httpd: $(HTTPDETC)
 	mkdir -p $(HTTPDETC)/sites.d
 	cp httpd.conf $(HTTPDETC)/sites.d/$(PACKAGE).conf
 	# Use [@] to ensure we don't get substitutions
@@ -17,7 +20,8 @@ install: $(HTTPDETC)
 		-e "s/[@]IP@/$(IP)/g" \
 		-e "s/[@]PORT@/$(PORT)/g" \
 		-e "s/[@]LISTEN_DIRECTIVE@/$(LISTEN_DIRECTIVE)/g"
-.PHONY: install
+
+.PHONY: install-httpd
 
 uninstall:
 .PHONY: uninstall
