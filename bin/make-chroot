@@ -15,6 +15,12 @@ create_chroot() {
 	if test x$CHROOT_NAME = x; then
 		die "No chroot name given"
 	fi;
+
+	if test -e $CHROOT/lock; then
+		die "Chroot is already locked: $CHROOT"
+	fi
+	echo `date` >$CHROOT/lock
+
 	echo "Creating chroot at $CHROOT"
 
 	TMPDIR="/tmp/$CHROOT_NAME.$$"

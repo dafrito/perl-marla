@@ -35,6 +35,8 @@ disable_chroot() {
 	do_unmount $CHROOT/tmp
 	do_unmount $CHROOT/srv
 	do_unmount $CHROOT/var/log
+
+	rm -f $CHROOT/lock
 }
 
 for name in $*; do

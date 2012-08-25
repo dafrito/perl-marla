@@ -20,6 +20,12 @@ enable_chroot() {
 		die "Chroot does not exist: $CHROOT"
 	fi;
 
+	# Lock this chroot
+	if test -e $CHROOT/lock; then
+		die "Chroot is already locked: $CHROOT"
+	fi
+	echo `date` >$CHROOT/lock
+
 	# Get a temporary filesystem for /tmp
 	mkdir -p $CHROOT/tmp
 	mount -t tmpfs none $CHROOT/tmp || die
