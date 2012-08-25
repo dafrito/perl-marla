@@ -48,7 +48,6 @@ install: uninstall build install-httpd $(MARLASHARE)
 		fi;                                       \
 		$(MAKE) -C $$site                         \
 		SERVER_NAME=$$SERVER_NAME                 \
-		PACKAGE=`echo $$site | sed -e 's/\./-/g'` \
 		PORT=$$PORT                               \
 		LISTEN_DIRECTIVE="$$LISTEN_DIRECTIVE"     \
 		$@;                                       \
