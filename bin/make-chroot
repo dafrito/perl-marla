@@ -7,7 +7,7 @@ die() {
 }
 
 CHROOT_NAME="$*"
-CHROOT="/media/chroot/$CHROOT_NAME"
+CHROOT="/media/chroot/marla/$CHROOT_NAME"
 
 if test x$CHROOT_NAME = x; then
 	die "No chroot name given"
