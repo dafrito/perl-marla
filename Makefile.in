@@ -1,8 +1,10 @@
-# BUILD and BUILDNAME are provided from ./configure
 include build/default.config
+
+# The following arguments are provided from ./configure
 export BUILD
 export BUILDNAME
 export IP
+export PREFIX
 
 # Default rule
 all: tar
