@@ -51,7 +51,7 @@ install: uninstall build install-httpd $(MARLASHARE)
 		PACKAGE=`echo $$site | sed -e 's/\./-/g'` \
 		PORT=$$PORT                               \
 		LISTEN_DIRECTIVE="$$LISTEN_DIRECTIVE"     \
-		install;                                  \
+		$@;                                       \
 		if test x$(LISTEN_BASE) != x; then        \
 			let PORT++;                           \
 		fi;                                       \
