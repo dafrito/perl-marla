@@ -67,8 +67,12 @@ install-httpd: $(HTTPDETC) httpd/*.conf
 	PORT=$(PORT); \
 	if test x$$PORT = x; then \
 		PORT="*"; \
+		NAMEDVHOST_DIRECTIVE="# Using port-based virtual hosting"; \
+	else \
+		NAMEDVHOST_DIRECTIVE="NameVirtualHost $(IP):$(PORT)\nListen $(PORT)"; \
 	fi; \
 	find $(HTTPDETC) -name '*.conf' | xargs sed -i \
+		-e "s/@NAMEDVHOST_DIRECTIVE@/$$NAMEDVHOST_DIRECTIVE/g" \
 		-e "s#@HTTPDMARLA@#$(HTTPDMARLA)#g" \
 		-e "s/@IP@/$(IP)/g" \
 		-e "s/@PORT@/$$PORT/g"
