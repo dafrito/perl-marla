@@ -44,7 +44,7 @@ install: uninstall build install-httpd $(MARLASHARE)
 			LISTEN_DIRECTIVE="Listen $$PORT";     \
 		else                                      \
 			SERVER_NAME=$$site:$$PORT;            \
-			LISTEN_DIRECTIVE="#Listen $$PORT";    \
+			LISTEN_DIRECTIVE="# No listen needed";\
 		fi;                                       \
 		$(MAKE) -C $$site                         \
 		SERVER_NAME=$$SERVER_NAME                 \
