@@ -60,3 +60,9 @@ yum --installroot=$CHROOT -y install httpd mod_fcgid || die
 # Mount /srv for the jail
 chroot_mount /srv
 
+# Add a symlink to our site's configuration. Note that this will
+# be created even if we don't install Marla.
+pushd $CHROOT/etc/httpd/conf
+mv httpd.conf httpd.conf.orig
+ln -s ./marla/httpd.conf
+popd
