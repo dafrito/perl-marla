@@ -1,0 +1,45 @@
+#!/bin/bash
+PATH=/bin:/usr/bin
+
+CHROOT_ROOT="/media/chroot/marla"
+
+die() {
+	echo $* >&2
+	exit 1
+}
+
+enable_chroot() {
+	local CHROOT_NAME="$*"
+	local CHROOT=$CHROOT_ROOT/$CHROOT_NAME
+
+	if test x$CHROOT_NAME = x; then
+		die "No chroot name given"
+	fi;
+
+	if test ! -d $CHROOT; then
+		die "Chroot does not exist: $CHROOT"
+	fi;
+
+	# Get a temporary filesystem for /tmp
+	mkdir -p $CHROOT/tmp
+	mount -t tmpfs none $CHROOT/tmp || die
+
+	# Record logs in a persistent place, outside of the jail. This
+	# allows us to blow away jails without losing log data.
+	LOGDIR=/var/log/chroot/$CHROOT_NAME
+	mkdir -p $CHROOT/var/log
+	mkdir -p /var/log/chroot
+	if test ! -d $LOGDIR; then
+		mv -f $CHROOT/var/log $LOGDIR
+	fi;
+	mount --bind $LOGDIR $CHROOT/var/log || die
+
+	# Mount /srv for the jail
+	mkdir -p $CHROOT/srv
+	mount --bind /srv $CHROOT/srv || die
+	mount -o remount,ro $CHROOT/srv || die
+}
+
+for name in $*; do
+	enable_chroot `basename $name`;
+done
