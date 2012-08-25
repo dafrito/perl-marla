@@ -8,7 +8,7 @@ die() {
 	exit 1
 }
 
-unmount() {
+do_unmount() {
 	local dir="$*"
 	if mount | grep -q $dir; then
 		umount -v $dir;
@@ -32,9 +32,9 @@ disable_chroot() {
 		sleep 2
 	fi;
 
-	unmount $CHROOT/tmp
-	unmount $CHROOT/srv
-	unmount $CHROOT/var/log
+	do_unmount $CHROOT/tmp
+	do_unmount $CHROOT/srv
+	do_unmount $CHROOT/var/log
 }
 
 for name in $*; do
