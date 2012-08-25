@@ -1,0 +1,62 @@
+#!/bin/bash
+PATH=/bin:/usr/bin
+
+die() {
+	echo $* >&2
+	exit 1
+}
+
+CHROOT_NAME="$*"
+CHROOT="/media/chroot/$CHROOT_NAME"
+
+if test x$CHROOT_NAME = x; then
+	die "No chroot name given"
+fi;
+echo "Creating chroot at $CHROOT"
+
+TMPDIR="/tmp/$CHROOT_NAME.$$"
+mkdir -p $TMPDIR || die
+trap 'rm -rf $TMPDIR' EXIT
+
+# Initialize RPM and install fedora-relase, which will create a
+# directory hierarchy for us.
+mkdir -p $CHROOT/var/lib/rpm || die
+rpm --root $CHROOT --initdb || die
+yumdownloader --destdir=$TMPDIR fedora-release || die
+rpm --root $CHROOT -ivh --nodeps $TMPDIR/fedora-release*rpm
+
+# Make some device nodes. If we also wanted to introduce /proc
+# and /sys, we would do so here. However, for now, I don't see
+# a reason.
+mkdir -p $CHROOT/dev
+mknod -m 666 $CHROOT/dev/null c 1 3
+mknod -m 666 $CHROOT/dev/zero c 1 5
+mknod -m 666 $CHROOT/dev/random c 1 8
+mknod -m 666 $CHROOT/dev/urandom c 1 9
+
+chroot_mount() {
+	local dir="$*"
+	mkdir -p $CHROOT/srv
+	mount --bind $dir $CHROOT/$dir
+	mount -o remount,ro $CHROOT/$dir
+}
+
+# Get a temporary filesystem for /tmp
+mkdir -p $CHROOT/tmp
+mount -t tmpfs none $CHROOT/tmp
+
+# Record logs in a persistent place, outside of the jail. This
+# allows us to blow away jails without losing log data.
+LOGDIR=/var/log/chroot/$CHROOT_NAME
+mkdir -p $CHROOT/var/log
+mkdir -p /var/log/chroot
+mv -f $CHROOT/var/log /var/log/chroot/$CHROOT_NAME
+mkdir $CHROOT/var/log
+mount --bind $LOGDIR $CHROOT/var/log || die
+
+# Finally, install Apache
+yum --installroot=$CHROOT -y install httpd mod_fcgid || die
+
+# Mount /srv for the jail
+chroot_mount /srv
+
