@@ -8,20 +8,44 @@ die() {
 	exit 1
 }
 
+do_initial_mounts() {
+	# Get a temporary filesystem for /tmp
+	mkdir -p $CHROOT/tmp
+	mount -t tmpfs none $CHROOT/tmp || die
+
+	# Record logs in a persistent place, outside of the jail. This
+	# allows us to blow away jails without losing log data.
+	LOGDIR=/var/log/chroot/$CHROOT_NAME
+	mkdir -p $CHROOT/var/log
+	mkdir -p /var/log/chroot
+	if test ! -d $LOGDIR; then
+		mv -f $CHROOT/var/log $LOGDIR
+		# Recreate this directory, since it's a mount-point.
+		mkdir -p $CHROOT/var/log
+	fi;
+	mount --bind $LOGDIR $CHROOT/var/log || die
+}
+
+do_server_mounts() {
+	# Mount /srv for the jail
+	mkdir -p $CHROOT/srv
+	mount --bind /srv $CHROOT/srv || die
+	mount -o remount,ro $CHROOT/srv || die
+}
+
 create_chroot() {
-	local CHROOT_NAME="$*"
-	local CHROOT=$CHROOT_ROOT/$CHROOT_NAME
+	CHROOT_NAME="$*"
+	CHROOT=$CHROOT_ROOT/$CHROOT_NAME
 
 	if test x$CHROOT_NAME = x; then
 		die "No chroot name given"
 	fi;
 
+	mkdir -p $CHROOT
 	if test -e $CHROOT/lock; then
 		die "Chroot is already locked: $CHROOT"
 	fi
 	echo `date` >$CHROOT/lock
-
-	echo "Creating chroot at $CHROOT"
 
 	TMPDIR="/tmp/$CHROOT_NAME.$$"
 	mkdir -p $TMPDIR || die
@@ -36,7 +60,7 @@ create_chroot() {
 	mknod -m 666 $CHROOT/dev/random c 1 8
 	mknod -m 666 $CHROOT/dev/urandom c 1 9
 
-	`dirname $0`/enable-chroot $CHROOT_NAME || die
+	do_initial_mounts
 
 	# Initialize RPM and install fedora-relase, which will create a
 	# directory hierarchy for us.
@@ -44,6 +68,9 @@ create_chroot() {
 	rpm --root $CHROOT --initdb || die
 	yumdownloader --destdir=$TMPDIR fedora-release || die
 	rpm --root $CHROOT -ivh --nodeps $TMPDIR/fedora-release*rpm
+
+	# Make sure the chroot shares our timezone.
+	cp /etc/localtime $CHROOT/etc/localtime
 
 	# Finally, install Apache
 	yum --installroot=$CHROOT -y install httpd mod_fcgid || die
@@ -55,8 +82,7 @@ create_chroot() {
 	ln -s ./marla/httpd.conf
 	popd
 
-	# Make sure the chroot shares our timezone.
-	cp /etc/localtime $CHROOT/etc/localtime
+	do_server_mounts
 }
 
 for name in $*; do

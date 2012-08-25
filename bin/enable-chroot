@@ -8,9 +8,32 @@ die() {
 	exit 1
 }
 
+do_initial_mounts() {
+	# Get a temporary filesystem for /tmp
+	mkdir -p $CHROOT/tmp
+	mount -t tmpfs none $CHROOT/tmp || die
+
+	# Record logs in a persistent place, outside of the jail. This
+	# allows us to blow away jails without losing log data.
+	LOGDIR=/var/log/chroot/$CHROOT_NAME
+	mkdir -p $CHROOT/var/log
+	mkdir -p /var/log/chroot
+	if test ! -d $LOGDIR; then
+		mv -f $CHROOT/var/log $LOGDIR
+	fi;
+	mount --bind $LOGDIR $CHROOT/var/log || die
+}
+
+do_server_mounts() {
+	# Mount /srv for the jail
+	mkdir -p $CHROOT/srv
+	mount --bind /srv $CHROOT/srv || die
+	mount -o remount,ro $CHROOT/srv || die
+}
+
 enable_chroot() {
-	local CHROOT_NAME="$*"
-	local CHROOT=$CHROOT_ROOT/$CHROOT_NAME
+	CHROOT_NAME="$*"
+	CHROOT=$CHROOT_ROOT/$CHROOT_NAME
 
 	if test x$CHROOT_NAME = x; then
 		die "No chroot name given"
@@ -26,24 +49,8 @@ enable_chroot() {
 	fi
 	echo `date` >$CHROOT/lock
 
-	# Get a temporary filesystem for /tmp
-	mkdir -p $CHROOT/tmp
-	mount -t tmpfs none $CHROOT/tmp || die
-
-	# Record logs in a persistent place, outside of the jail. This
-	# allows us to blow away jails without losing log data.
-	LOGDIR=/var/log/chroot/$CHROOT_NAME
-	mkdir -p $CHROOT/var/log
-	mkdir -p /var/log/chroot
-	if test ! -d $LOGDIR; then
-		mv -f $CHROOT/var/log $LOGDIR
-	fi;
-	mount --bind $LOGDIR $CHROOT/var/log || die
-
-	# Mount /srv for the jail
-	mkdir -p $CHROOT/srv
-	mount --bind /srv $CHROOT/srv || die
-	mount -o remount,ro $CHROOT/srv || die
+	do_initial_mounts
+	do_server_mounts
 }
 
 for name in $*; do
