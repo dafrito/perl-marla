@@ -72,7 +72,7 @@ $(HTTPDETC): $(PREFIX)
 	mkdir -p $@
 
 $(PREFIX):
-	mkdir -p $(PREFIX)
+	mkdir -p $@
 
 RPMFLAGS ?= --ba
 rpm: $(OUTDIR)/$(tarfile) $(OUTDIR)/$(NAME).spec | $(RPMDIR)
