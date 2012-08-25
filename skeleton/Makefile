@@ -14,20 +14,32 @@ Makefile: ../skeleton/Makefile
 install: install-httpd
 .PHONY: install
 
-install-httpd: $(HTTPDETC)
-	mkdir -p $(HTTPDETC)/sites.d
-	cp httpd.conf $(HTTPDETC)/sites.d/$(PACKAGE).conf
-	# Use [@] to ensure we don't get substitutions
-	find $(HTTPDETC) -name '*.conf' | xargs sed -i \
-		-e "s/[@]SERVER_NAME@/$(SERVER_NAME)/g" \
-		-e "s/[@]PACKAGE@/$(PACKAGE)/g" \
-		-e "s/[@]IP@/$(IP)/g" \
-		-e "s/[@]PORT@/$(PORT)/g" \
-		-e "s/[@]LISTEN_DIRECTIVE@/$(LISTEN_DIRECTIVE)/g"
+# Site-specific Apache configuration
+httpdconf=$(HTTPDETC)/sites.d/$(PACKAGE).conf
 
+install-httpd: $(httpdconf)
 .PHONY: install-httpd
 
+$(httpdconf): $(HTTPDETC)/sites.d httpd.conf
+	cp httpd.conf httpd.conf-wip
+	# Use [@] to ensure we don't get substitutions
+	sed -i                                                \
+		-e "s/[@]SERVER_NAME@/$(SERVER_NAME)/g"           \
+		-e "s/[@]PACKAGE@/$(PACKAGE)/g"                   \
+		-e "s/[@]IP@/$(IP)/g"                             \
+		-e "s/[@]PORT@/$(PORT)/g"                         \
+		-e "s/[@]LISTEN_DIRECTIVE@/$(LISTEN_DIRECTIVE)/g" \
+	httpd.conf-wip;
+	mv httpd.conf-wip $@
+
+$(HTTPDETC)/sites.d: $(HTTPDETC)
+	mkdir -p $@
+
 uninstall:
+	# Add a couple variable checks, just to be safe
+	if test x$(PACKAGE) != x; then                 \
+		rm -f $(HTTPDETC)/sites.d/$(PACKAGE).conf; \
+	fi;
 .PHONY: uninstall
 
 clean:
