@@ -2,3 +2,4 @@ build.config
 Makefile
 release/**
 *-wip
+.fullname

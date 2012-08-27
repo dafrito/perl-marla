@@ -6,8 +6,8 @@ export BUILDNAME
 export IP
 export PREFIX
 
-export NAME=marla
-export FULLNAME=$(NAME)-$(BUILDNAME)
+export NAME
+export FULLNAME
 
 export OUTDIR ?= release
 export RPMDIR ?= $$HOME/rpmbuild
