@@ -47,5 +47,5 @@ Group:    Applications/System
 %description -n marla-chroot
 Scripts to create, enable, and disable chroots for Marla.
 
-%files -nmarla-chroot
-/usr/bin/marla-*-chroot
+%files -n marla-chroot
+/usr/bin/marla-chroot-*

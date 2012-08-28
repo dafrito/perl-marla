@@ -62,7 +62,7 @@ $(MARLASHARE): $(PREFIX)
 
 bindir=$(PREFIX)/usr/bin
 
-install-chroot: $(wildcard ./bin/*-chroot) | $(bindir)
+install-chroot: $(wildcard ./bin/chroot-*) | $(bindir)
 	for script in $^; do \
 		cp $$script $(bindir)/marla-`basename $$script`; \
 	done;
