@@ -1,0 +1,24 @@
+#!/bin/bash
+PATH=/bin:/usr/bin
+
+CHROOT_ROOT="/media/chroot/marla"
+
+die() {
+	echo $* >&2
+	exit 1
+}
+
+CHROOT_NAME="$1"
+shift
+
+if test x$CHROOT_NAME = x; then
+	die "No chroot name given"
+fi;
+
+CHROOT=$CHROOT_ROOT/$CHROOT_NAME
+
+if test ! -d $CHROOT; then
+	die "Chroot does not exist: $CHROOT"
+fi;
+
+/sbin/chroot $CHROOT $*

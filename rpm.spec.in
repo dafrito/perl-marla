@@ -40,7 +40,7 @@ make install PREFIX=$RPM_BUILD_ROOT
 /etc/httpd/conf/marla/*.conf
 
 %package -n marla-chroot
-Release:  2%{?dist}
+Release:  3%{?dist}
 Summary:  Chroot creation tools for Marla.
 Group:    Applications/System
 
