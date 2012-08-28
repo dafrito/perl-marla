@@ -96,8 +96,8 @@ tarfile=$(FULLNAME).tar.gz
 
 RPMFLAGS ?= --ba
 rpm: $(OUTDIR)/$(tarfile) spec | $(RPMDIR)
-	cp -u $(OUTDIR)/$(tarfile)	$(RPMDIR)/SOURCES
-	cp -u $(OUTDIR)/$(FULLNAME).spec	$(RPMDIR)/SPECS
+	cp -u $(OUTDIR)/$(tarfile) $(RPMDIR)/SOURCES
+	cp -u $(OUTDIR)/$(FULLNAME).spec $(RPMDIR)/SPECS
 	rpmbuild $(RPMFLAGS) $(RPMDIR)/SPECS/$(FULLNAME).spec
 	cd $(OUTDIR); \
 	for package in `rpm -q --specfile ./$(FULLNAME).spec`; do \
