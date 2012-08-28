@@ -32,7 +32,7 @@ build: websites
 
 # Be certain that arguments passed to this make
 # are also passed to the uninstall's make.
-install: uninstall build install-httpd $(MARLASHARE)
+install: uninstall build install-chroot install-httpd $(MARLASHARE)
 	if test x$(PORT) = x; then                    \
 		PORT=$(LISTEN_BASE);                      \
 	else                                          \
@@ -58,6 +58,16 @@ install: uninstall build install-httpd $(MARLASHARE)
 .PHONY: install
 
 $(MARLASHARE): $(PREFIX)
+	mkdir -p $@
+
+bindir=$(PREFIX)/usr/bin
+
+install-chroot: $(wildcard ./bin/*-chroot) | $(bindir)
+	for script in $^; do \
+		cp $$script $(bindir)/marla-`basename $$script`; \
+	done;
+
+$(bindir):
 	mkdir -p $@
 
 install-httpd: $(HTTPDETC) httpd/*.conf

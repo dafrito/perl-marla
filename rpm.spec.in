@@ -42,3 +42,14 @@ make install PREFIX=$RPM_BUILD_ROOT
 %changelog
 * Sat Jul 02 2012 Aaron Faanes <dafrito@gmail.com> - 1.0-1
 - Initial package
+
+%package -n marla-chroot
+Release:   1%{?dist}
+Summary:  Chroot creation tools for Marla.
+Group:    Applications/System
+
+%description -n marla-chroot
+Scripts to create, enable, and disable chroots for Marla.
+
+%files -nmarla-chroot
+/usr/bin/marla-*-chroot
