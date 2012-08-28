@@ -2,6 +2,7 @@
 PATH=/bin:/usr/bin
 
 CHROOT_ROOT="/media/chroot/marla"
+REPODIR="/media/yum/dafrito"
 
 die() {
 	echo $* >&2
@@ -83,6 +84,9 @@ create_chroot() {
 	popd
 
 	do_server_mounts
+
+	# Install our Yum repository
+	rpm --root $CHROOT -ivh $REPODIR/dafrito-release-local* || die:w
 }
 
 for name in $*; do
