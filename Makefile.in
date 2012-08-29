@@ -124,15 +124,17 @@ $(OUTDIR)/$(tarfile):
 spec: $(OUTDIR)/$(FULLNAME).spec
 .PHONY: spec
 
-$(OUTDIR)/$(FULLNAME).spec:
-	echo -n >$@0-wip
-	echo "%define projectname $(NAME)" >>$@-wip
-	echo "%define fullname $(FULLNAME)" >>$@-wip
+$(OUTDIR)/$(FULLNAME).spec: | $(OUTDIR)
+	echo -n                                >$@-wip
+	echo "%define projectname $(NAME)"    >>$@-wip
+	echo "%define fullname $(FULLNAME)"   >>$@-wip
 	echo "%define buildname $(BUILDNAME)" >>$@-wip
+	echo                                  >>$@-wip
 	cat rpm.spec.in >>$@-wip
-	for site in `cat websites`; do                 \
-		echo >>$@-wip;                             \
-		cat $$site/rpm.spec.in >>$@-wip;           \
+	for site in `cat websites`; do                  \
+		$(MAKE) -C $$site rpm.spec || exit 1;       \
+		echo                              >>$@-wip; \
+		cat $$site/rpm.spec               >>$@-wip; \
 	done
 	mv $@-wip $@
 .PHONY: $(OUTDIR)/$(FULLNAME).spec

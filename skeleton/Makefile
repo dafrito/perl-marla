@@ -1,7 +1,8 @@
+include site.config
+
 build:
 .PHONY: build
 
-SITE=@SITE@
 PACKAGE=$(shell echo $(SITE) | sed -e 's/\./-/g')
 SITESHARE=$(MARLASHARE)/$(SITE)
 SHAREPATH=/usr/share/marla
@@ -29,6 +30,7 @@ $(httpdconf): $(HTTPDETC)/sites.d httpd.conf
 	# Use [@] to ensure we don't get substitutions
 	sed -i                                                \
 		-e "s/[@]SERVER_NAME@/$(SERVER_NAME)/g"           \
+		-e "s/[@]SITE@/$(SITE)/g"                         \
 		-e "s/[@]PACKAGE@/$(PACKAGE)/g"                   \
 		-e "s/[@]IP@/$(IP)/g"                             \
 		-e "s/[@]PORT@/$(PORT)/g"                         \
@@ -36,6 +38,17 @@ $(httpdconf): $(HTTPDETC)/sites.d httpd.conf
 		-e "s#[@]SITEDATA@#$(SHAREPATH)/$(SITE)#g"       \
 	httpd.conf-wip;
 	mv httpd.conf-wip $@
+
+spec: rpm.spec
+.PHONY: spec
+
+rpm.spec: rpm.spec.in
+	cp $< $@-wip
+	sed -i                                                \
+		-e "s/[@]SITE@/$(SITE)/g"                         \
+		-e "s/[@]PACKAGE@/$(PACKAGE)/g"                   \
+	$@-wip;
+	mv $@-wip $@
 
 $(HTTPDETC)/sites.d: $(HTTPDETC)
 	mkdir -p $@

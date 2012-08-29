@@ -30,12 +30,7 @@ if ! grep -q -x -F "$SITE" websites; then
 	echo $SITE >>websites
 fi
 
-# Replace our placeholder variables with the names
-# of our new site
-PACKAGE=`echo $SITE | sed -e 's/\./-/g'`
-find $SITE -type f | xargs sed -i \
-	-e "s/@PACKAGE@/$PACKAGE/g" \
-	-e "s/@SITE@/$SITE/g"
+echo "SITE=$SITE" >>$SITE/site.config
 
 # Finally, indicate that we're ready to go
 echo "$SITE is ready for use"
