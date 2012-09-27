@@ -28,7 +28,6 @@ do_server_mounts() {
 	# Mount /srv for the jail
 	mkdir -p $CHROOT/srv
 	mount --bind /srv $CHROOT/srv || die
-	mount -o remount,ro $CHROOT/srv || die
 }
 
 enable_chroot() {
