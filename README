@@ -22,18 +22,18 @@ Each website will be built using make and installed using make install.
 Installation via RPM is also supported. By convention, each website will become
 a new subpackage of marla, such as marla-example-com.
 
-### Making a new website
+## Making a new website
 
 1. ./bin/make-site www.example.com
 2. cd www.example.com
 3. ... Setup httpd.conf, CGI, etc ...
 
-### Installing
+## Installing
 
 Marla is designed to support incremental roll-out of web applications. Generally
 speaking, you should run marla from within a chroot.
 
-#### Configuration
+### Configuration
 
 One problem often encountered when testing websites is how to deal with DNS
 resolution. Marla solves this problem by separating configuration into a 'local'
@@ -49,9 +49,19 @@ website is mapped to its proper DNS name.
 
     ./configure linode
 
-#### Deployment
+### Profile Variables
 
-##### Local Deployment
+* _LISTEN_BASE_ sets the port offset when configuring local servers. During
+testing, each website will be given a different port starting from this
+variable.
+* _PORT_ sets the port for a production website. In this case, domain names will
+be used and all virtual hosts will use the same port and IP address.
+* _IP_ is the IP address used for each virtual host.
+
+
+### Deployment
+
+#### Local Deployment
 
 Local deployment will often be done via a specified PREFIX, like so:
 
@@ -60,6 +70,6 @@ Local deployment will often be done via a specified PREFIX, like so:
 For maximum safety, you should deploy to a temporary directory, as shown above,
 to ensure things are working properly without needing to corrupt a chroot.
 
-##### Local Chrooted Deployment
+#### Local Chrooted Deployment
 
 vim: set tw=80 et! :
