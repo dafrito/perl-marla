@@ -5,6 +5,7 @@ build:
 
 PACKAGE=$(shell echo $(SITE) | sed -e 's/\./-/g')
 SITESHARE=$(MARLASHARE)/$(SITE)
+SITEDATA=/usr/share/$(NAME)/$(SITE)
 
 # Regenerate our Makefile from the skeleton
 Makefile: ../skeleton/Makefile
@@ -45,7 +46,7 @@ $(httpdconf): $(HTTPDETC)/sites.d httpd.conf
 		-e "s/[@]IP@/$(IP)/g"                             \
 		-e "s/[@]PORT@/$(PORT)/g"                         \
 		-e "s/[@]SECURE_PORT@/$(SECURE_PORT)/g"           \
-		-e "s#[@]SITESHARE@#$(SITESHARE)#g"               \
+		-e "s#[@]SITESHARE@#$(SITEDATA)#g"               \
 	httpd.conf-wip;
 	mv httpd.conf-wip $@
 
@@ -67,14 +68,13 @@ install-share: $(SITESHARE)
 	cp -r cgi mason static $(SITESHARE)
 	find $(SITESHARE)/cgi -type f | xargs sed -i          \
 		-e "s#[@]HTTPDMARLA@#$(HTTPDMARLA)#g"             \
-		-e "s#[@]SITESHARE@#$(SITESHARE)#g"               \
 		-e "s/[@]DOMAIN@/$(DOMAIN)/g"                     \
 		-e "s/[@]SITE@/$(SITE)/g"                         \
 		-e "s/[@]PACKAGE@/$(PACKAGE)/g"                   \
 		-e "s/[@]IP@/$(IP)/g"                             \
 		-e "s/[@]PORT@/$(PORT)/g"                         \
 		-e "s/[@]SECURE_PORT@/$(SECURE_PORT)/g"           \
-		-e "s#[@]SITESHARE@#$(SITESHARE)#g";
+		-e "s#[@]SITESHARE@#$(SITEDATA)#g";
 .PHONY: install-share
 
 $(SITESHARE):
