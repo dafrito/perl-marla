@@ -5,7 +5,6 @@ build:
 
 PACKAGE=$(shell echo $(SITE) | sed -e 's/\./-/g')
 SITESHARE=$(MARLASHARE)/$(SITE)
-SHAREPATH=/usr/share/marla
 
 # Regenerate our Makefile from the skeleton
 Makefile: ../skeleton/Makefile
@@ -46,7 +45,7 @@ $(httpdconf): $(HTTPDETC)/sites.d httpd.conf
 		-e "s/[@]IP@/$(IP)/g"                             \
 		-e "s/[@]PORT@/$(PORT)/g"                         \
 		-e "s/[@]SECURE_PORT@/$(SECURE_PORT)/g"           \
-		-e "s#[@]SITEDATA@#$(SHAREPATH)/$(SITE)#g"        \
+		-e "s#[@]SITESHARE@#$(SITESHARE)#g"               \
 	httpd.conf-wip;
 	mv httpd.conf-wip $@
 
