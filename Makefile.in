@@ -40,20 +40,18 @@ install: uninstall build install-chroot install-httpd $(MARLASHARE)
 	fi;                                           \
 	for site in `cat websites`; do                \
 		if test x$(LISTEN_BASE) != x; then        \
-			SECURE_PORT=$$(($$PORT++))            \
-			DOMAIN=$(IP)                          \
-			LISTEN_DIRECTIVE="                    \
-	Listen $(IP):$$PORT                           \
-	Listen $(IP):$$SECURE_PORT"                   \
+			SECURE_PORT=$$(($$PORT + 1));         \
+			DOMAIN=$(IP);                         \
+			LISTEN_PORTS="$$PORT $$SECURE_PORT";  \
 		else                                      \
-			DOMAIN=$$site                         \
-			LISTEN_DIRECTIVE="# No listen needed";\
+			DOMAIN=$$site;                        \
+			LISTEN_PORTS=;                        \
 		fi;                                       \
 		$(MAKE) -C $$site                         \
 		DOMAIN=$$DOMAIN                           \
 		PORT=$$PORT                               \
 		SECURE_PORT=$$SECURE_PORT                 \
-		LISTEN_DIRECTIVE="$$LISTEN_DIRECTIVE"     \
+		LISTEN_PORTS="$$LISTEN_PORTS"             \
 		$@;                                       \
 		if test x$(LISTEN_BASE) != x; then        \
 			let PORT+=2;                          \

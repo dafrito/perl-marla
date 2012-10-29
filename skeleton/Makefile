@@ -26,7 +26,17 @@ install-httpd: $(httpdconf)
 .PHONY: install-httpd
 
 $(httpdconf): $(HTTPDETC)/sites.d httpd.conf
-	cp httpd.conf httpd.conf-wip
+	touch httpd.conf-wip
+	
+	# Add listen directives, if needed
+	if test x"$(LISTEN_PORTS)" != x; then \
+		for p in $(LISTEN_PORTS); do \
+			echo "Listen $(IP):$$p" >>httpd.conf-wip; \
+		done; \
+		echo >>httpd.conf-wip; \
+	fi
+	cat httpd.conf >>httpd.conf-wip
+		
 	# Use [@] to ensure we don't get substitutions
 	sed -i                                                \
 		-e "s/[@]DOMAIN@/$(DOMAIN)/g"                     \
@@ -34,7 +44,6 @@ $(httpdconf): $(HTTPDETC)/sites.d httpd.conf
 		-e "s/[@]PACKAGE@/$(PACKAGE)/g"                   \
 		-e "s/[@]IP@/$(IP)/g"                             \
 		-e "s/[@]PORT@/$(PORT)/g"                         \
-		-e "s/[@]LISTEN_DIRECTIVE@/$(LISTEN_DIRECTIVE)/g" \
 		-e "s/[@]SECURE_PORT@/$(SECURE_PORT)/g"           \
 		-e "s#[@]SITEDATA@#$(SHAREPATH)/$(SITE)#g"        \
 	httpd.conf-wip;
