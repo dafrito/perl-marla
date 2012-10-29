@@ -93,9 +93,10 @@ $(HTTPDETC)/listen.conf: $(HTTPDETC)
 	if test x$$PORT = x; then \
 		echo "# Using port-based virtual hosting" >>$@-wip; \
 	else \
+		echo "Listen $(PORT)" >>$@-wip; \
 		echo "NameVirtualHost $(IP):$(PORT)" >>$@-wip; \
-		echo "Listen: $(PORT)" >>$@-wip; \
-		echo "Listen: $(SECURE_PORT)" >>$@-wip; \
+		echo "Listen $(SECURE_PORT)" >>$@-wip; \
+		echo "NameVirtualHost $(IP):$(SECURE_PORT)" >>$@-wip; \
 	fi;
 	mv $@-wip $@
 
