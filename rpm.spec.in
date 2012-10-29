@@ -38,6 +38,7 @@ make install PREFIX=$RPM_BUILD_ROOT
 %dir /etc/httpd/conf/marla/sites.d
 %dir /usr/share/marla
 /etc/httpd/conf/marla/*.conf
+/etc/httpd/conf/marla/ssl/*
 
 %package -n marla-chroot
 Release:  4%{?dist}
