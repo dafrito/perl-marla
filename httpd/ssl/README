@@ -2,5 +2,8 @@ These are testing certificates and private keys. They won't pass any sort of
 validation, but they're useful to ensure SSL is working during local
 development.
 
+The CA certificate is used to generate new certificates, but it should never be
+trusted outside of local development.  The CA key password is 'dummycert'.
+
 NEVER place real certificates here. Real certificates should always be handled
 manually by the user, to ensure proper care and handling.
