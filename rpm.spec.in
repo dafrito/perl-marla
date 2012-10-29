@@ -12,7 +12,7 @@ URL:		http://www.dafrito.com/%{projectname}
 Source0:	%{fullname}.tar.gz
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildArch:	noarch
-Requires:	httpd mod_fcgid
+Requires:	httpd mod_fcgid mod_ssl
 BuildRequires: make
 
 %description
