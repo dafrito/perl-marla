@@ -101,8 +101,8 @@ $(HTTPDETC)/listen.conf: $(HTTPDETC)
 
 install-ssl: $(addprefix httpd/ssl/, 127.0.0.1.crt 127.0.0.1.key) | $(HTTPDETC)/ssl $(HTTPDETC)/ssl/README
 	cp $^ $(HTTPDETC)/ssl
-	chmod 500 $(HTTPDETC)/ssl
-	chmod 400 $(HTTPDETC)/ssl/*
+	chmod 700 $(HTTPDETC)/ssl
+	chmod 600 $(HTTPDETC)/ssl/*
 .PHONY: install-ssl
 
 $(HTTPDETC)/ssl/README:
