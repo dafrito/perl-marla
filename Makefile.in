@@ -105,6 +105,9 @@ install-ssl: $(addprefix httpd/ssl/, 127.0.0.1.crt 127.0.0.1.key) | $(HTTPDETC)/
 	chmod 600 $(HTTPDETC)/ssl/*
 .PHONY: install-ssl
 
+$(addprefix httpd/ssl/, 127.0.0.1.crt 127.0.0.1.key):
+	$(MAKE) -C httpd/ssl cert
+
 $(HTTPDETC)/ssl/README:
 	echo SSL certificates and keys should be placed here. They should be named >$@
 	echo according to the domain name that they verify. For instance, foo.com should >>$@
