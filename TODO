@@ -1,0 +1,2 @@
+* Separate the uses of PREFIX and DESTDIR.
+http://www.freebsd.org/doc/en/books/porters-handbook/porting-prefix.html
