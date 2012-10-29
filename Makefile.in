@@ -99,7 +99,7 @@ $(HTTPDETC)/listen.conf: $(HTTPDETC)
 	fi;
 	mv $@-wip $@
 
-install-ssl: $(addprefix httpd/ssl/, localhost.crt localhost.key) | $(HTTPDETC)/ssl $(HTTPDETC)/ssl/README
+install-ssl: $(addprefix httpd/ssl/, 127.0.0.1.crt 127.0.0.1.key) | $(HTTPDETC)/ssl $(HTTPDETC)/ssl/README
 	cp $^ $(HTTPDETC)/ssl
 .PHONY: install-ssl
 
@@ -107,7 +107,7 @@ $(HTTPDETC)/ssl/README:
 	echo SSL certificates and keys should be placed here. They should be named >$@
 	echo according to the domain name that they verify. For instance, foo.com should >>$@
 	echo have a key named foo.com.key and a cerificate named foo.com.crt. During >>$@
-	echo testing, localhost.key and localhost.crt will be used. Note that these local >>$@
+	echo testing, 127.0.0.1.key and 127.0.0.1.crt will be used. Note that these local >>$@
 	echo keys are not real certificates and will cause browser warnings when used. >>$@
 
 $(HTTPDETC) $(HTTPDETC)/ssl: $(PREFIX)
