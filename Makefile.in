@@ -85,6 +85,7 @@ install-httpd: httpd/*.conf $(HTTPDETC)/listen.conf install-ssl | $(HTTPDETC)
 	find $(HTTPDETC) -name '*.conf' | xargs sed -i \
 		-e "s#@HTTPDMARLA@#$(HTTPDMARLA)#g";
 	
+	mkdir -p $(HTTPDETC)/sites.d
 .PHONY: install-httpd
 
 $(HTTPDETC)/listen.conf: $(HTTPDETC)
