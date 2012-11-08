@@ -140,7 +140,7 @@ rpm: $(OUTDIR)/$(tarfile) spec | $(RPMDIR)
 tar: $(OUTDIR)/$(tarfile)
 .PHONY: tar
 
-$(OUTDIR)/$(tarfile):
+$(OUTDIR)/$(tarfile): | $(OUTDIR)
 	tar czf $@ \
 		--exclude-vcs \
 		--exclude-backups \
