@@ -28,7 +28,7 @@ Makefile: Makefile.in configure $(BUILD) build/default.config
 
 build: | $(SITES_DIR)
 	for site in `ls $(SITES_DIR)`; do \
-		$(MAKE) -C $$site $@; \
+		$(MAKE) -C $(SITES_DIR)/$$site $@; \
 	done
 .PHONY: build
 
@@ -54,12 +54,12 @@ install: uninstall build install-chroot install-httpd $(MARLASHARE) $(SITES_DIR)
 		fi;                                       \
 		echo "$$site: $$DOMAIN:$$PORT";           \
 		echo "$$site secure: $$DOMAIN:$$SECURE_PORT"; \
-		$(MAKE) -C $$site                         \
-		DOMAIN=$$DOMAIN                           \
-		PORT=$$PORT                               \
-		SECURE_PORT=$$SECURE_PORT                 \
-		LISTEN_PORTS="$$LISTEN_PORTS"             \
-		$@;                                       \
+		$(MAKE) -C $(SITES_DIR)/$$site            \
+			DOMAIN=$$DOMAIN                       \
+			PORT=$$PORT                           \
+			SECURE_PORT=$$SECURE_PORT             \
+			LISTEN_PORTS="$$LISTEN_PORTS"         \
+			$@;                                   \
 		if [ $$buildtype = local ]; then          \
 			let PORT+=2;                          \
 		fi;                                       \
@@ -165,9 +165,10 @@ $(OUTDIR)/$(FULLNAME).spec: | $(SITES_DIR) $(OUTDIR)
 	echo                                  >>$@-wip
 	cat rpm.spec.in >>$@-wip
 	for site in `ls $(SITES_DIR)`; do               \
-		$(MAKE) -C $$site rpm.spec || exit 1;       \
+		site_path=$(SITES_DIR)/$$site;              \
+		$(MAKE) -C $$site_path rpm.spec || exit 1;  \
 		echo                              >>$@-wip; \
-		cat $$site/rpm.spec               >>$@-wip; \
+		cat $$site_path/rpm.spec          >>$@-wip; \
 	done
 	mv $@-wip $@
 .PHONY: $(OUTDIR)/$(FULLNAME).spec
@@ -185,7 +186,7 @@ uninstall:
 		rm -rf $(HTTPDETC);                        \
 	fi;
 	for site in `ls $(SITES_DIR)`; do              \
-		$(MAKE) -C $$site $@;                      \
+		$(MAKE) -C $(SITES_DIR)/$$site $@;         \
 	done
 	# Be certain that arguments passed to this make
 	# are also passed to the install's make.
@@ -195,7 +196,7 @@ uninstall:
 clean: | $(SITES_DIR)
 	[ "$(OUTDIR)" != "/" ] && rm -rf $(OUTDIR)
 	for site in `ls $(SITES_DIR)`; do \
-		$(MAKE) -C $$site $@; \
+		$(MAKE) -C $(SITES_DIR)/$$site $@; \
 	done
 .PHONY: clean
 
