@@ -46,7 +46,7 @@ install: uninstall build install-chroot install-httpd $(MARLASHARE)
 			DOMAIN=$(IP);                         \
 			LISTEN_PORTS="$$PORT $$SECURE_PORT";  \
 		else                                      \
-			DOMAIN=$$site;                        \
+			DOMAIN=`basename $$site`;             \
 			LISTEN_PORTS=;                        \
 		fi;                                       \
 		echo "$$site: $$DOMAIN:$$PORT";           \

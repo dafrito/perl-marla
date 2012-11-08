@@ -40,7 +40,7 @@ $(httpdconf): $(HTTPDETC)/sites.d httpd.conf
 	# Use [@] to ensure we don't get substitutions
 	sed -i                                                \
 		-e "s#[@]HTTPDMARLA@#$(HTTPDMARLA)#g"             \
-		-e "s/[@]DOMAIN@/$(DOMAIN)/g"                     \
+		-e "s#[@]DOMAIN@#$(DOMAIN)#g"                     \
 		-e "s/[@]SITE@/$(SITE)/g"                         \
 		-e "s/[@]PACKAGE@/$(PACKAGE)/g"                   \
 		-e "s/[@]IP@/$(IP)/g"                             \
