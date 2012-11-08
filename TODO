@@ -1,4 +1,12 @@
 * Separate the uses of PREFIX and DESTDIR.
 http://www.freebsd.org/doc/en/books/porters-handbook/porting-prefix.html
 
+### Move sites out of marla proper
+
+It'd be nice if Marla only contained the code we use to manage websites, rather
+than having everything in one repo. I originally liked this arrangement because
+it's simple, but it's also going to be quickly cumbersome. Of course, doing this
+will be a pretty hefty redesign, but I think it'll be worth it once things
+settle down.
+
 vim: set tw=80 ft=markdown :
