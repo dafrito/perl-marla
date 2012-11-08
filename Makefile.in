@@ -17,6 +17,8 @@ export HTTPDETC=$(PREFIX)/etc/httpd/$(HTTPDMARLA)
 
 export MARLASHARE=$(PREFIX)/usr/share/$(NAME)
 
+export SITES_DIR=sites.d
+
 # Default rule
 all: build
 .PHONY: all
@@ -24,15 +26,15 @@ all: build
 Makefile: Makefile.in configure $(BUILD) build/default.config
 	./configure $(BUILDNAME)
 
-build: websites
-	for site in `cat websites`; do \
+build: | $(SITES_DIR)
+	for site in `ls $(SITES_DIR)`; do \
 		$(MAKE) -C $$site $@; \
 	done
 .PHONY: build
 
 # Be certain that arguments passed to this make
 # are also passed to the uninstall's make.
-install: uninstall build install-chroot install-httpd $(MARLASHARE)
+install: uninstall build install-chroot install-httpd $(MARLASHARE) $(SITES_DIR)
 	if test x$(PORT) = x; then                    \
 		PORT=$(LISTEN_BASE);                      \
 		buildtype=local;                          \
@@ -40,7 +42,7 @@ install: uninstall build install-chroot install-httpd $(MARLASHARE)
 		buildtype=remote;                         \
 		PORT=$(PORT);                             \
 	fi;                                           \
-	for site in `cat websites`; do                \
+	for site in `ls $(SITES_DIR)`; do             \
 		if [ $$buildtype = local ]; then          \
 			SECURE_PORT=$$(($$PORT + 1));         \
 			DOMAIN=$(IP);                         \
@@ -154,14 +156,14 @@ $(OUTDIR)/$(tarfile): | $(OUTDIR)
 spec: $(OUTDIR)/$(FULLNAME).spec
 .PHONY: spec
 
-$(OUTDIR)/$(FULLNAME).spec: | $(OUTDIR)
+$(OUTDIR)/$(FULLNAME).spec: | $(SITES_DIR) $(OUTDIR)
 	echo -n                                >$@-wip
 	echo "%define projectname $(NAME)"    >>$@-wip
 	echo "%define fullname $(FULLNAME)"   >>$@-wip
 	echo "%define buildname $(BUILDNAME)" >>$@-wip
 	echo                                  >>$@-wip
 	cat rpm.spec.in >>$@-wip
-	for site in `cat websites`; do                  \
+	for site in `ls $(SITES_DIR)`; do               \
 		$(MAKE) -C $$site rpm.spec || exit 1;       \
 		echo                              >>$@-wip; \
 		cat $$site/rpm.spec               >>$@-wip; \
@@ -170,8 +172,8 @@ $(OUTDIR)/$(FULLNAME).spec: | $(OUTDIR)
 .PHONY: $(OUTDIR)/$(FULLNAME).spec
 # I use phony here to ensure the specfile is always regenerated
 
-$(OUTDIR):
-	mkdir -p $(OUTDIR)
+$(OUTDIR) $(SITES_DIR):
+	mkdir -p $@
 
 $(RPMDIR):
 	mkdir -p $@
@@ -181,7 +183,7 @@ uninstall:
 	if echo $(HTTPDETC) | grep -q -e '$(NAME)'; then \
 		rm -rf $(HTTPDETC);                        \
 	fi;
-	for site in `cat websites`; do                 \
+	for site in `ls $(SITES_DIR)`; do              \
 		$(MAKE) -C $$site $@;                      \
 	done
 	# Be certain that arguments passed to this make
@@ -189,9 +191,9 @@ uninstall:
 .PHONY: uninstall
 
 # We do NOT delete RPMDIR during clean, since we don't own it.
-clean:
+clean: | $(SITES_DIR)
 	[ "$(OUTDIR)" != "/" ] && rm -rf $(OUTDIR)
-	for site in `cat websites`; do \
+	for site in `ls $(SITES_DIR)`; do \
 		$(MAKE) -C $$site $@; \
 	done
 .PHONY: clean
