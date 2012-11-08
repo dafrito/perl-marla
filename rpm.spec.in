@@ -10,6 +10,7 @@ Group:		Applications/Internet
 License:	Proprietary
 URL:		http://www.dafrito.com/%{projectname}
 Source0:	%{fullname}.tar.gz
+Source1:	%{fullname}-all-sites.tar
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildArch:	noarch
 Requires:	httpd mod_fcgid mod_ssl
@@ -20,14 +21,26 @@ Website framework and content for Aaron Faanes. This package isn't likely to
 be very useful unless you're developing these websites.
 
 %prep
-%setup -q -n %{fullname}
+rm -rf %{fullname}
+mkdir %{fullname}
+tar -xf %{_sourcedir}/%{fullname}.tar.gz
+mkdir -p %{fullname}/sites.d
+tar -C %{fullname}/sites.d -xf %{_sourcedir}/%{fullname}-all-sites.tar
+cd %{fullname}/sites.d
+for site in `ls *.tar.gz`; do
+    tar xf $site;
+    rm $site;
+done;
+cd ..
 ./configure %{buildname}
 
 %build
+cd %{fullname}
 make build
 
 %install
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
+cd %{fullname}
 make install PREFIX=$RPM_BUILD_ROOT
 
 %clean

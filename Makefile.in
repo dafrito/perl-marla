@@ -129,7 +129,7 @@ $(PREFIX):
 tarfile=$(FULLNAME).tar.gz
 
 RPMFLAGS ?= --ba
-rpm: $(OUTDIR)/$(tarfile) spec | $(RPMDIR)
+rpm: spec tar $(RPMDIR)/SOURCES/$(FULLNAME)-all-sites.tar | $(RPMDIR)
 	cp -u $(OUTDIR)/$(tarfile) $(RPMDIR)/SOURCES
 	cp -u $(OUTDIR)/$(FULLNAME).spec $(RPMDIR)/SPECS
 	rpmbuild $(RPMFLAGS) $(RPMDIR)/SPECS/$(FULLNAME).spec
@@ -141,19 +141,29 @@ rpm: $(OUTDIR)/$(tarfile) spec | $(RPMDIR)
 	done
 .PHONY: rpm
 
-tar: $(OUTDIR)/$(tarfile)
+$(RPMDIR)/SOURCES/$(FULLNAME)-all-sites.tar: | $(RPMDIR)
+	touch $@-wip
+	for site in `ls $(SITES_DIR)`; do \
+		tar -rf $@-wip \
+			--transform='s,^.*/,,g' \
+			$(SITES_DIR)/$$site/`basename $$site`.tar.gz \
+			|| exit 1; \
+	done;
+	mv $@-wip $@
+
+tar: $(OUTDIR)/$(tarfile) | $(OUTDIR)
+	for site in `ls $(SITES_DIR)`; do \
+		$(MAKE) -C $(SITES_DIR)/$$site `basename $$site`.tar.gz || exit 1; \
+	done
 .PHONY: tar
 
-$(OUTDIR)/$(tarfile): | $(OUTDIR)
-	tar czf $@ \
+$(OUTDIR)/$(tarfile): bin/chroot-* httpd build/default.config $(BUILD) configure Makefile Makefile.in | $(OUTDIR)
+	tar  -cf $@ \
 		--exclude-vcs \
+		--exclude='README' \
 		--exclude-backups \
-		--exclude='release/**' \
-		--exclude='**-wip' \
-		--transform='s,^\.,$(FULLNAME),g' \
-		.;
-.PHONY: $(OUTDIR)/$(tarfile)
-# I use phony here to ensure the tarfile is always regenerated
+		--transform='s,^,$(FULLNAME)/,g' \
+		$^;
 
 spec: $(OUTDIR)/$(FULLNAME).spec
 .PHONY: spec

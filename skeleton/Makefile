@@ -41,6 +41,18 @@ $(httpdconf): $(HTTPDETC)/sites.d httpd.conf
 	httpd.conf-wip;
 	mv httpd.conf-wip $@
 
+tar: $(SITE).tar.gz
+.PHONY: tar
+
+$(SITE).tar.gz: cgi static httpd.conf Makefile
+	tar cvzf $@ \
+		--exclude-vcs \
+		--exclude-backups \
+		--exclude='README' \
+		--exclude='**-wip' \
+		--transform='s,^\.,$(SITE),g' \
+		$^;
+
 spec: rpm.spec
 .PHONY: spec
 
