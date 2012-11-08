@@ -41,6 +41,7 @@ install: uninstall build install-chroot install-httpd $(MARLASHARE) $(SITES_DIR)
 	else                                          \
 		buildtype=remote;                         \
 		PORT=$(PORT);                             \
+		SECURE_PORT=$(SECURE_PORT);               \
 	fi;                                           \
 	for site in `ls $(SITES_DIR)`; do             \
 		if [ $$buildtype = local ]; then          \
