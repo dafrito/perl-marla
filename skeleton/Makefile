@@ -56,7 +56,7 @@ $(HTTPDETC)/sites.d: $(HTTPDETC)
 	mkdir -p $@
 
 install-share: $(SITESHARE)
-	cp -r cgi mason static $(SITESHARE)
+	cp -r cgi static $(SITESHARE)
 	find $(SITESHARE)/cgi -type f | xargs sed -i          \
 		-e "s#[@]HTTPDMARLA@#$(HTTPDMARLA)#g"             \
 		-e "s/[@]DOMAIN@/$(DOMAIN)/g"                     \
