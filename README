@@ -109,8 +109,8 @@ system, a build tool, and rsync will likely suffice.
 ### Process
 
 When you're ready to deploy, you'll go through the following process. The
-commands may differ slightly depending on if you're using an install version of
-Marla's tools or working from the source repo.
+commands may differ slightly depending on if you're using an installed version
+of Marla's tools or working from the source repo.
 
 	# Build the Yum repo we use
 	$ cd ~/src/repomaker
