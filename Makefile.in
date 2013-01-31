@@ -28,7 +28,7 @@ Makefile: Makefile.in configure $(BUILD) build/default.config
 
 build: | $(SITES_DIR)
 	for site in `ls $(SITES_DIR)`; do \
-		$(MAKE) -C $(SITES_DIR)/$$site $@; \
+		$(MAKE) -C $(SITES_DIR)/$$site $@ || exit 1; \
 	done
 .PHONY: build
 
