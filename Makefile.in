@@ -144,16 +144,18 @@ rpm: spec tar $(RPMDIR)/SOURCES/$(FULLNAME)-all-sites.tar | $(RPMDIR)
 $(RPMDIR)/SOURCES/$(FULLNAME)-all-sites.tar: | $(RPMDIR)
 	touch $@-wip
 	for site in `ls $(SITES_DIR)`; do \
+		source $(SITES_DIR)/$$site/site.config; \
 		tar -rf $@-wip \
 			--transform='s,^.*/,,g' \
-			$(SITES_DIR)/$$site/`basename $$site`.tar.gz \
+			$(SITES_DIR)/$$site/$$SITE.tar.gz \
 			|| exit 1; \
 	done;
 	mv $@-wip $@
 
 tar: $(OUTDIR)/$(tarfile) | $(OUTDIR)
 	for site in `ls $(SITES_DIR)`; do \
-		$(MAKE) -C $(SITES_DIR)/$$site `basename $$site`.tar.gz || exit 1; \
+		source $(SITES_DIR)/$$site/site.config; \
+		$(MAKE) -C $(SITES_DIR)/$$site $$SITE.tar.gz || exit 1; \
 	done
 .PHONY: tar
 
