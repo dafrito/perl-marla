@@ -24,7 +24,7 @@ a new subpackage of marla, such as marla-example-com.
 
 ## Making a new website
 
-1. ./bin/make-site www.example.com
+1. scaf marla www.example.com
 2. cd www.example.com
 3. ... Setup httpd.conf, CGI, etc ...
 
