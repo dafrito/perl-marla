@@ -6,7 +6,6 @@ website can be found under its directory, with the following organization:
 example.com/            Root for this website
 example.com/httpd/      Apache configuration
 example.com/static/     Static content: css, js, etc.
-example.com/mason/      Mason component directory
 
 This organization will be created automatically by bin/make-site. You should use
 that command when starting from scratch. make-site should construct a relatively
