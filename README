@@ -118,20 +118,20 @@ of Marla's tools or working from the source repo.
 	$ make deploy
 
 	# Create a new chroot. This will take some time.
-	$ ./bin/chroot-create test1
+	$ marla-chroot-create test1
 
 	# Install the configuration of marla you want.
-	$ ./bin/chroot-yum test1 install marla-local-*
+	$ marla-chroot-yum test1 install marla-local-*
 
 	# Run apache
-	$ ./bin/chroot-run test1 /sbin/apachectl start
+	$ marla-chroot-run test1 /sbin/apachectl start
 
 ### Undeploying
 
 When you're ready to take the server down, go through the following process:
 
 	# Unmount all partitions for this chroot and shut down Apache
-	$ ./bin/chroot-disable test1
+	$ marla-chroot-disable test1
 
 	# Delete the chroot
 	$ rm -fr /media/chroot/marla/test1
