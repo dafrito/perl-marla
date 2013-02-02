@@ -15,7 +15,7 @@ export RPMDIR ?= $$HOME/rpmbuild
 export HTTPDMARLA=conf/$(NAME)
 export HTTPDETC=$(PREFIX)/etc/httpd/$(HTTPDMARLA)
 
-export MARLASHARE=$(PREFIX)/usr/share/$(NAME)
+export MARLASHARE=$(PREFIX)/share/$(NAME)
 
 export SITES_DIR=sites.d
 
