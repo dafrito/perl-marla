@@ -166,7 +166,7 @@ tar: $(OUTDIR)/$(tarfile) | $(OUTDIR)
 	done
 .PHONY: tar
 
-$(OUTDIR)/$(tarfile): bin/chroot-* httpd build/default.config $(BUILD) configure Makefile Makefile.in | $(OUTDIR)
+$(OUTDIR)/$(tarfile): bin/chroot-* httpd build/default.config $(BUILD) configure Makefile.in | $(OUTDIR)
 	tar  -cf $@ \
 		--exclude-vcs \
 		--exclude='README' \
