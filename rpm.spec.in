@@ -32,7 +32,7 @@ for site in `ls *.tar.gz`; do
     rm $site;
 done;
 cd ..
-./configure %{buildname}
+PREFIX=%{_prefix} ./configure %{buildname}
 
 %build
 cd %{fullname}
