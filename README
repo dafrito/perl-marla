@@ -75,7 +75,7 @@ directory structure will be entirely created at this point, but there will be no
 execution capability. This allows you to quickly investigate whether your
 changes were successful without breaking a live server or corrupting a chroot.
 
-    make install PREFIX=/tmp/marla/1
+    make install DESTDIR=/tmp/marla/1
 
 ### Chrooted Deployment
 
